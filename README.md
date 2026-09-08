@@ -11,12 +11,14 @@ A single-file, browser-based tool for compressing, merging, trimming, and signin
   - target pixel dimensions
   - an **exam form spec** preset (auto-fills the pixel size and KB range for IBPS/SSC CGL/UPSC/RRB photo & signature uploads, then crops/scales to the exact box)
 - **Merge** — combine multiple PDFs in a chosen order, optionally forcing a uniform output page size (A4/Letter/Legal/A3)
+- **Rotate** — rotate you files orientation to portrait or landscape.
 - **Remove pages** — thumbnail picker to drop specific pages from a PDF
 - **Sign** — draw a signature or upload a signature image, drag/resize it onto any page, and bake it into the PDF
+- **Convert** — convert file type from image to pdf and vice versa.
 
 ## Usage
 
-Just open `pagepress.html` in any modern browser (Chrome, Edge, Firefox, Safari). No build step, no install, no dependencies to set up locally — it pulls `pdf-lib` and `pdf.js` from a CDN at runtime.
+Just open `index.html` in any modern browser (Chrome, Edge, Firefox, Safari). No build step, no install, no dependencies to set up locally — it pulls `pdf-lib` and `pdf.js` from a CDN at runtime.
 
 ## Tech
 
