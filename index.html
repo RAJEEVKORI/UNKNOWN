@@ -8,7 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
   :root{
     --paper:#EDEFE7;
@@ -175,8 +174,6 @@
     position:absolute; bottom:0; left:0; right:0; background:rgba(30,42,34,0.85); color:#fff;
     font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-align:center; padding:2px 0;
   }
-  .thumb.rotatethumb{ overflow:visible; height:150px; display:flex; align-items:center; justify-content:center; }
-  .thumb.rotatethumb img{ width:auto; height:auto; max-width:92%; max-height:128px; transition:transform .15s; }
   .thumb .mark{
     position:absolute; top:4px; right:4px; width:18px; height:18px; border-radius:50%;
     background:#fff; border:1.5px solid var(--ink-faint); display:flex; align-items:center; justify-content:center;
@@ -221,9 +218,7 @@
       <button class="tool-btn active" data-tool="compress"><span class="num">01</span>Compress</button>
       <button class="tool-btn" data-tool="merge"><span class="num">02</span>Merge</button>
       <button class="tool-btn" data-tool="pages"><span class="num">03</span>Remove pages</button>
-      <button class="tool-btn" data-tool="rotate"><span class="num">04</span>Rotate</button>
-      <button class="tool-btn" data-tool="sign"><span class="num">05</span>Sign</button>
-      <button class="tool-btn" data-tool="convert"><span class="num">06</span>Convert</button>
+      <button class="tool-btn" data-tool="sign"><span class="num">04</span>Sign</button>
     </nav>
 
     <main>
@@ -343,29 +338,6 @@
         </div>
       </section>
 
-      <!-- ROTATE -->
-      <section class="panel" id="panel-rotate">
-        <div class="card">
-          <h2>Rotate</h2>
-          <p class="sub">Rotate individual pages, or auto-straighten pages that don't match the rest of the document.</p>
-          <div class="drop" id="rotate-drop">
-            <div>Drop a PDF here, or <strong>click to browse</strong></div>
-          </div>
-          <input type="file" id="rotate-input" accept="application/pdf">
-          <div class="thumbgrid" id="rotate-thumbgrid"></div>
-          <div class="row" style="margin-top:16px;" id="rotate-actions" style="display:none;">
-            <button class="btn secondary" id="rotate-auto">Auto-rotate</button>
-            <button class="btn" id="rotate-run">Save rotated PDF</button>
-          </div>
-          <p class="hint" id="rotate-hint" style="display:none;">Auto-rotate flags pages whose orientation (portrait/landscape) doesn't match the majority of the document, and rotates them 90° to match. It goes by page shape, not by reading the text — check the result and nudge any page with the ↺/↻ buttons if it rotated the wrong way.</p>
-          <div class="progress" id="rotate-progress"><div class="bar"></div></div>
-          <div class="result" id="rotate-result">
-            <div class="stat"><span class="new"></span></div>
-            <a class="btn secondary dl" id="rotate-download" download>Download</a>
-          </div>
-        </div>
-      </section>
-
       <!-- SIGN -->
       <section class="panel" id="panel-sign">
         <div class="card">
@@ -414,69 +386,6 @@
           <div class="result" id="sign-result">
             <div class="stat"><span class="new"></span></div>
             <a class="btn secondary dl" id="sign-download" download>Download</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONVERT -->
-      <section class="panel" id="panel-convert">
-        <div class="card">
-          <h2>Convert</h2>
-          <p class="sub">Images to PDF, or PDF to images.</p>
-          <div class="segmented" id="convert-mode" style="margin-bottom:18px;">
-            <button data-mode="img2pdf" class="active">Images → PDF</button>
-            <button data-mode="pdf2img">PDF → Images</button>
-          </div>
-
-          <!-- IMAGES -> PDF -->
-          <div id="convert-img2pdf">
-            <div class="drop" id="c-i2p-drop">
-              <div>Drop images here, or <strong>click to browse</strong> — add as many as you like</div>
-            </div>
-            <input type="file" id="c-i2p-input" accept="image/*" multiple>
-            <div class="filelist" id="c-i2p-filelist"></div>
-            <div class="row" style="margin-top:14px;">
-              <div class="field">
-                <label>Page size</label>
-                <select id="c-i2p-pagesize">
-                  <option value="fit" selected>Fit to each image</option>
-                  <option value="A4">A4</option>
-                  <option value="Letter">US Letter</option>
-                  <option value="Legal">US Legal</option>
-                  <option value="A3">A3</option>
-                </select>
-              </div>
-            </div>
-            <div style="margin-top:16px;"><button class="btn" id="c-i2p-run" disabled>Create PDF</button></div>
-          </div>
-
-          <!-- PDF -> IMAGES -->
-          <div id="convert-pdf2img" style="display:none;">
-            <div class="drop" id="c-p2i-drop">
-              <div>Drop a PDF here, or <strong>click to browse</strong></div>
-            </div>
-            <input type="file" id="c-p2i-input" accept="application/pdf">
-            <div class="row" style="margin-top:14px;">
-              <div class="field">
-                <label>Format</label>
-                <select id="c-p2i-format"><option value="jpeg" selected>JPG</option><option value="png">PNG</option></select>
-              </div>
-              <div class="field">
-                <label>Resolution</label>
-                <select id="c-p2i-res">
-                  <option value="1.5">Standard</option>
-                  <option value="2.5" selected>High</option>
-                  <option value="4">Very high</option>
-                </select>
-              </div>
-            </div>
-            <div style="margin-top:16px;"><button class="btn" id="c-p2i-run" disabled>Convert to images</button></div>
-          </div>
-
-          <div class="progress" id="convert-progress"><div class="bar"></div></div>
-          <div class="result" id="convert-result">
-            <div class="stat"><span class="new"></span></div>
-            <a class="btn secondary dl" id="convert-download" download>Download</a>
           </div>
         </div>
       </section>
@@ -571,15 +480,12 @@ wireDrop(compressDrop, compressInput, files=>{
 const EXAM_PRESETS = {
   'ibps-photo':   { group:'IBPS (PO / Clerk / SO)', label:'Photograph', w:200, h:230, minKB:20, maxKB:50 },
   'ibps-sign':    { group:'IBPS (PO / Clerk / SO)', label:'Signature',  w:140, h:60,  minKB:10, maxKB:20 },
-  'ibps-thumb':   { group:'IBPS (PO / Clerk / SO)', label:'Thumb impression', w:null, h:null, minKB:10, maxKB:20 },
-  'ibps-decl':    { group:'IBPS (PO / Clerk / SO)', label:'Handwritten declaration', w:null, h:null, minKB:10, maxKB:20 },
   'ssccgl-photo': { group:'SSC CGL', label:'Photograph', w:275, h:354, minKB:20, maxKB:50 },
   'ssccgl-sign':  { group:'SSC CGL', label:'Signature',  w:236, h:79,  minKB:10, maxKB:20 },
   'upsc-photo':   { group:'UPSC (Civil Services)', label:'Photograph', w:350, h:450, minKB:20, maxKB:200 },
   'upsc-sign':    { group:'UPSC (Civil Services)', label:'Signature',  w:400, h:400, minKB:20, maxKB:100 },
-  'rrb-photo':    { group:'RRB (Group D / NTPC / Technician)', label:'Photograph', w:320, h:240, minKB:20, maxKB:70 },
-  'rrb-sign':     { group:'RRB (Group D / NTPC / Technician)', label:'Signature',  w:140, h:60,  minKB:10, maxKB:50 },
-  'rrb-cert':     { group:'RRB (Group D / NTPC / Technician)', label:'Certificate (scanned, e.g. SC/ST)', w:null, h:null, minKB:50, maxKB:500, pdf:true },
+  'rrb-photo':    { group:'RRB (Group D / NTPC / Technician)', label:'Photograph', w:320, h:240, minKB:20, maxKB:50 },
+  'rrb-sign':     { group:'RRB (Group D / NTPC / Technician)', label:'Signature',  w:140, h:60,  minKB:10, maxKB:40 },
 };
 const examSelect = document.getElementById('compress-exam-preset');
 (function buildExamOptions(){
@@ -594,8 +500,7 @@ const examSelect = document.getElementById('compress-exam-preset');
       examSelect.appendChild(groups[p.group]);
     }
     const opt = document.createElement('option');
-    const dimsPart = p.w && p.h ? `${p.w}×${p.h}px, ` : '';
-    opt.value = key; opt.textContent = p.label + ` (${dimsPart}${p.minKB}–${p.maxKB}KB${p.pdf ? ', PDF' : ''})`;
+    opt.value = key; opt.textContent = p.label + ` (${p.w}×${p.h}px, ${p.minKB}–${p.maxKB}KB)`;
     groups[p.group].appendChild(opt);
   });
 })();
@@ -603,17 +508,15 @@ examSelect.addEventListener('change', ()=>{
   const p = EXAM_PRESETS[examSelect.value];
   const hintEl = document.getElementById('compress-exam-hint');
   if (!p){ hintEl.style.display = 'none'; return; }
-  document.getElementById('compress-dims-w').value = p.w || '';
-  document.getElementById('compress-dims-h').value = p.h || '';
+  document.getElementById('compress-dims-w').value = p.w;
+  document.getElementById('compress-dims-h').value = p.h;
   document.getElementById('compress-size-unit').value = 'KB';
   // aim inside the allowed range, biased toward the upper bound so the file
   // isn't rejected for being too small, with a small safety margin
   const target = Math.max(p.minKB, Math.round(p.maxKB * 0.9));
   document.getElementById('compress-size-value').value = target;
   hintEl.style.display = 'block';
-  const dimsPart = p.w && p.h ? ` at ${p.w}×${p.h}px` : '';
-  const pdfPart = p.pdf ? ' This one is typically uploaded as a PDF — use a scanned PDF as the input file.' : '';
-  hintEl.textContent = `Official range: ${p.minKB}–${p.maxKB}KB${dimsPart}. Targeting ${target}KB — always confirm the exact figures in the current notification before submitting.${pdfPart}`;
+  hintEl.textContent = `Official range: ${p.minKB}–${p.maxKB}KB at ${p.w}×${p.h}px. Targeting ${target}KB — always confirm the exact figures in the current notification before submitting.`;
 });
 
 let compressMode = 'size';
@@ -1177,246 +1080,6 @@ document.getElementById('sign-apply').addEventListener('click', async ()=>{
   } catch(err){
     console.error(err);
     alert('Could not apply the signature: ' + err.message);
-  }
-});
-
-/* =========================================================
-   ROTATE
-   ========================================================= */
-let rotateSourceFile = null, rotateSourceBuf = null;
-let rotateAngles = []; // total absolute rotation per page, degrees
-const rotateDrop = document.getElementById('rotate-drop');
-const rotateInput = document.getElementById('rotate-input');
-const rotateGrid = document.getElementById('rotate-thumbgrid');
-const rotateActions = document.getElementById('rotate-actions');
-const rotateHint = document.getElementById('rotate-hint');
-
-wireDrop(rotateDrop, rotateInput, async files=>{
-  const f = files.find(isPdf); if(!f) return;
-  rotateSourceFile = f;
-  rotateDrop.querySelector('div').innerHTML = `<strong>${f.name}</strong> — click to change`;
-  rotateGrid.innerHTML = '<p class="hint">Rendering pages…</p>';
-  rotateActions.style.display = 'none';
-  rotateHint.style.display = 'none';
-  document.getElementById('rotate-result').classList.remove('show');
-
-  rotateSourceBuf = await f.arrayBuffer();
-  const src = await PDFDocument.load(rotateSourceBuf.slice(0));
-  const pdfjsDoc = await pdfjsLib.getDocument({data: rotateSourceBuf.slice(0)}).promise;
-  rotateAngles = [];
-  rotateGrid.innerHTML = '';
-  for (let i=1;i<=pdfjsDoc.numPages;i++){
-    const page = await pdfjsDoc.getPage(i);
-    const canvas = await renderPdfPageToCanvas(page, 0.35);
-    const baseRotation = src.getPage(i-1).getRotation().angle || 0;
-    rotateAngles.push(((baseRotation % 360) + 360) % 360);
-    const div = document.createElement('div');
-    div.className = 'thumb rotatethumb';
-    div.dataset.i = i-1;
-    div.innerHTML = `
-      <img src="${canvas.toDataURL('image/jpeg',0.7)}" style="transform:rotate(${rotateAngles[i-1]}deg);">
-      <span class="pgnum">Page ${i} · <span class="deg">${rotateAngles[i-1]}°</span></span>
-      <span class="mark" data-act="ccw" style="left:4px; right:auto; cursor:pointer;" title="Rotate left">↺</span>
-      <span class="mark" data-act="cw" style="cursor:pointer;" title="Rotate right">↻</span>
-    `;
-    rotateGrid.appendChild(div);
-  }
-  rotateActions.style.display = 'flex';
-});
-
-function updateRotateThumb(i){
-  const thumb = rotateGrid.querySelector(`.thumb[data-i="${i}"]`);
-  if (!thumb) return;
-  thumb.querySelector('img').style.transform = `rotate(${rotateAngles[i]}deg)`;
-  thumb.querySelector('.deg').textContent = rotateAngles[i] + '°';
-}
-rotateGrid.addEventListener('click', e=>{
-  const mark = e.target.closest('.mark'); if(!mark) return;
-  const i = parseInt(mark.closest('.thumb').dataset.i);
-  const delta = mark.dataset.act === 'cw' ? 90 : -90;
-  rotateAngles[i] = ((rotateAngles[i]+delta) % 360 + 360) % 360;
-  updateRotateThumb(i);
-});
-
-document.getElementById('rotate-auto').addEventListener('click', ()=>{
-  if (!rotateAngles.length) return;
-  rotateHint.style.display = 'block';
-  // determine each page's effective orientation at its current rotation, find the majority
-  const thumbs = [...rotateGrid.querySelectorAll('.thumb')];
-  const orientations = thumbs.map(t=>{
-    const img = t.querySelector('img');
-    const w = img.naturalWidth, h = img.naturalHeight;
-    const i = parseInt(t.dataset.i);
-    const swapped = rotateAngles[i] % 180 !== 0;
-    const effW = swapped ? h : w, effH = swapped ? w : h;
-    return effW > effH ? 'landscape' : 'portrait';
-  });
-  const landCount = orientations.filter(o=>o==='landscape').length;
-  const majority = landCount > orientations.length/2 ? 'landscape' : 'portrait';
-  orientations.forEach((o,idx)=>{
-    if (o !== majority){
-      rotateAngles[idx] = ((rotateAngles[idx]+90) % 360 + 360) % 360;
-      updateRotateThumb(idx);
-    }
-  });
-});
-
-document.getElementById('rotate-run').addEventListener('click', async ()=>{
-  if (!rotateSourceBuf) return;
-  const progressEl = document.getElementById('rotate-progress');
-  setProgress(progressEl, 30);
-  try{
-    const outDoc = await PDFDocument.load(rotateSourceBuf.slice(0));
-    outDoc.getPages().forEach((p,i)=>p.setRotation(PDFLib.degrees(rotateAngles[i])));
-    const bytes = await outDoc.save();
-    const blob = new Blob([bytes], {type:'application/pdf'});
-    setProgress(progressEl, 100);
-    setTimeout(()=>setProgress(progressEl,0), 400);
-    const resultEl = document.getElementById('rotate-result');
-    resultEl.classList.add('show');
-    resultEl.querySelector('.new').textContent = `Rotated ${outDoc.getPageCount()} page(s) → ${formatBytes(blob.size)}`;
-    wireDownload(document.getElementById('rotate-download'), blob, rotateSourceFile.name.replace(/\.pdf$/i,'') + '-rotated.pdf');
-  } catch(err){
-    console.error(err);
-    alert('Could not rotate this PDF: ' + err.message);
-  }
-});
-
-/* =========================================================
-   CONVERT
-   ========================================================= */
-document.getElementById('convert-mode').addEventListener('click', e=>{
-  const btn = e.target.closest('button'); if(!btn) return;
-  document.querySelectorAll('#convert-mode button').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-  const mode = btn.dataset.mode;
-  document.getElementById('convert-img2pdf').style.display = mode==='img2pdf' ? 'block' : 'none';
-  document.getElementById('convert-pdf2img').style.display = mode==='pdf2img' ? 'block' : 'none';
-  document.getElementById('convert-result').classList.remove('show');
-});
-
-/* -- images -> pdf -- */
-let c_i2p_files = [];
-wireDrop(document.getElementById('c-i2p-drop'), document.getElementById('c-i2p-input'), files=>{
-  files.filter(f=>f.type.startsWith('image/')).forEach(f=>c_i2p_files.push(f));
-  renderI2pList();
-});
-function renderI2pList(){
-  const list = document.getElementById('c-i2p-filelist');
-  list.innerHTML = '';
-  c_i2p_files.forEach((f,i)=>{
-    const div = document.createElement('div');
-    div.className = 'fileitem';
-    div.innerHTML = `
-      <span class="name">${i+1}. ${f.name}</span>
-      <span class="size mono">${formatBytes(f.size)}</span>
-      <span class="reorder">
-        <button data-act="up" data-i="${i}" title="Move up">↑</button>
-        <button data-act="down" data-i="${i}" title="Move down">↓</button>
-      </span>
-      <span class="remove" data-act="rm" data-i="${i}" title="Remove">✕</span>
-    `;
-    list.appendChild(div);
-  });
-  document.getElementById('c-i2p-run').disabled = c_i2p_files.length === 0;
-}
-document.getElementById('c-i2p-filelist').addEventListener('click', e=>{
-  const el = e.target.closest('[data-act]'); if(!el) return;
-  const i = parseInt(el.dataset.i);
-  if (el.dataset.act==='up' && i>0){ [c_i2p_files[i-1],c_i2p_files[i]]=[c_i2p_files[i],c_i2p_files[i-1]]; }
-  if (el.dataset.act==='down' && i<c_i2p_files.length-1){ [c_i2p_files[i+1],c_i2p_files[i]]=[c_i2p_files[i],c_i2p_files[i+1]]; }
-  if (el.dataset.act==='rm'){ c_i2p_files.splice(i,1); }
-  renderI2pList();
-});
-document.getElementById('c-i2p-run').addEventListener('click', async ()=>{
-  if (!c_i2p_files.length) return;
-  const progressEl = document.getElementById('convert-progress');
-  setProgress(progressEl, 10);
-  const pageSizeKey = document.getElementById('c-i2p-pagesize').value;
-  try{
-    const outDoc = await PDFDocument.create();
-    for (let idx=0; idx<c_i2p_files.length; idx++){
-      const f = c_i2p_files[idx];
-      const img = await loadImageFromFile(f);
-      const canvas = document.createElement('canvas');
-      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.drawImage(img,0,0);
-      const blob = await canvasToBlob(canvas, 0.92);
-      const bytes = new Uint8Array(await blob.arrayBuffer());
-      const jpg = await outDoc.embedJpg(bytes);
-      let pw, ph;
-      if (pageSizeKey === 'fit'){ pw = canvas.width*72/96; ph = canvas.height*72/96; }
-      else { [pw, ph] = PAGE_SIZES[pageSizeKey]; }
-      const page = outDoc.addPage([pw, ph]);
-      const imgRatio = canvas.width/canvas.height, pageRatio = pw/ph;
-      let dw, dh;
-      if (imgRatio > pageRatio){ dw = pw; dh = pw/imgRatio; } else { dh = ph; dw = ph*imgRatio; }
-      page.drawImage(jpg, {x:(pw-dw)/2, y:(ph-dh)/2, width:dw, height:dh});
-      setProgress(progressEl, 10+Math.round(((idx+1)/c_i2p_files.length)*85));
-    }
-    const bytes = await outDoc.save();
-    const blob = new Blob([bytes], {type:'application/pdf'});
-    setProgress(progressEl, 100);
-    setTimeout(()=>setProgress(progressEl,0), 400);
-    const resultEl = document.getElementById('convert-result');
-    resultEl.classList.add('show');
-    resultEl.querySelector('.new').textContent = `${c_i2p_files.length} image(s) → PDF, ${formatBytes(blob.size)}`;
-    wireDownload(document.getElementById('convert-download'), blob, 'images.pdf');
-  } catch(err){
-    console.error(err);
-    alert('Could not build the PDF: ' + err.message);
-  }
-});
-
-/* -- pdf -> images -- */
-let c_p2i_file = null, c_p2i_buf = null;
-wireDrop(document.getElementById('c-p2i-drop'), document.getElementById('c-p2i-input'), async files=>{
-  const f = files.find(isPdf); if(!f) return;
-  c_p2i_file = f; c_p2i_buf = await f.arrayBuffer();
-  document.getElementById('c-p2i-drop').querySelector('div').innerHTML = `<strong>${f.name}</strong> — click to change`;
-  document.getElementById('c-p2i-run').disabled = false;
-});
-document.getElementById('c-p2i-run').addEventListener('click', async ()=>{
-  if (!c_p2i_buf) return;
-  const progressEl = document.getElementById('convert-progress');
-  setProgress(progressEl, 10);
-  const format = document.getElementById('c-p2i-format').value;
-  const scale = parseFloat(document.getElementById('c-p2i-res').value);
-  const ext = format === 'png' ? 'png' : 'jpg';
-  const mime = format === 'png' ? 'image/png' : 'image/jpeg';
-  try{
-    const pdfjsDoc = await pdfjsLib.getDocument({data: c_p2i_buf.slice(0)}).promise;
-    const baseName = c_p2i_file.name.replace(/\.pdf$/i,'');
-    if (pdfjsDoc.numPages === 1){
-      const page = await pdfjsDoc.getPage(1);
-      const canvas = await renderPdfPageToCanvas(page, scale);
-      const blob = await canvasToBlob(canvas, 0.92, mime);
-      setProgress(progressEl, 100); setTimeout(()=>setProgress(progressEl,0),400);
-      const resultEl = document.getElementById('convert-result');
-      resultEl.classList.add('show');
-      resultEl.querySelector('.new').textContent = `1 page → ${formatBytes(blob.size)}`;
-      wireDownload(document.getElementById('convert-download'), blob, `${baseName}.${ext}`);
-    } else {
-      const zip = new JSZip();
-      for (let i=1;i<=pdfjsDoc.numPages;i++){
-        const page = await pdfjsDoc.getPage(i);
-        const canvas = await renderPdfPageToCanvas(page, scale);
-        const blob = await canvasToBlob(canvas, 0.92, mime);
-        zip.file(`${baseName}-page${String(i).padStart(2,'0')}.${ext}`, blob);
-        setProgress(progressEl, 10+Math.round((i/pdfjsDoc.numPages)*80));
-      }
-      const zipBlob = await zip.generateAsync({type:'blob'});
-      setProgress(progressEl, 100); setTimeout(()=>setProgress(progressEl,0),400);
-      const resultEl = document.getElementById('convert-result');
-      resultEl.classList.add('show');
-      resultEl.querySelector('.new').textContent = `${pdfjsDoc.numPages} pages → ${formatBytes(zipBlob.size)} zip`;
-      wireDownload(document.getElementById('convert-download'), zipBlob, `${baseName}-images.zip`);
-    }
-  } catch(err){
-    console.error(err);
-    alert('Could not convert this PDF to images: ' + err.message);
   }
 });
 

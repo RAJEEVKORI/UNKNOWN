@@ -1,4 +1,4 @@
-# PagePress
+# Parnakar
 
 A single-file, browser-based tool for compressing, merging, trimming, and signing PDFs and images — including presets for Indian competitive exam form uploads (IBPS, SSC CGL, UPSC, RRB).
 
